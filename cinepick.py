@@ -77,27 +77,14 @@ if 'gen_movie' not in st.session_state:
     st.session_state.gen_movie = ''
     st.session_state.gen_synopsis = ''
 
-if 'faces_title_1' not in st.session_state:
-    st.session_state.faces_title_1 = []
-    st.session_state.imread_faces_title_1 = []
-    st.session_state.faces_bounds_title_1 = []
+if 'face_title_1' not in st.session_state:
+    st.session_state.face_title_1 = ""
+    st.session_state.char_1 = ""
 
-if 'faces_title_2' not in st.session_state:
-    st.session_state.faces_title_2 = []
-    st.session_state.imread_faces_title_2 = []
-    st.session_state.faces_bounds_title_2 = []
+if 'face_title_2' not in st.session_state:
+    st.session_state.face_title_2 = ""
+    st.session_state.char_2 = ""
 
-if 'title_1_char' not in st.session_state:
-    st.session_state.title_1_char = []
-
-if 'title_2_char' not in st.session_state:
-    st.session_state.title_2_char = []
-
-if 'char_1' not in st.session_state:
-    st.session_state.char_1 = ''
-
-if 'char_2' not in st.session_state:
-    st.session_state.char_2 = ''
 
 st.session_state.movies = st.session_state._movies
 
@@ -133,20 +120,6 @@ def get_genres():
     if mistery:
         genres.append('mistery')
     return genres
-
-
-def display_characters(faces_title):
-    # Create a list of images
-    char_list = []
-    for image_char in faces_title:
-        # Extract the NumPy array representing the image data
-        image_data = image_char[0]
-
-        # Convert the NumPy array to a PIL image object
-        pil_image = Image.fromarray(image_data, 'RGB')
-        char_list.append(pil_image)
-
-    return char_list
 
 
 ###################################
@@ -214,8 +187,8 @@ if len(selected_indices) > 2:
                             # RUNNING APPLICATION #
                             #######################
 
-url = "https://image-5e4uq44i6a-ez.a.run.app"
-#url = "http://127.0.0.1:8000"
+#url = "https://image-5e4uq44i6a-ez.a.run.app"
+url = "http://127.0.0.1:8000"
 
 
 # When 'Merge Synopsis' button is pushed
@@ -259,121 +232,88 @@ if st.sidebar.button('Merge Movies') and len(selected_indices) == 2:
 
 
 
-    # ##########################################################
-    # # LOADING FIRST MOVIE CHARACTER PICTURES, IMREAD OBJECTS #
-    # ##########################################################
-
-    # if st.session_state.faces_title_1 == []:
-    #     with st.spinner(f'Loading Characters from {title_1}'): # Spinner to show that it's loading
-    #         display_url = url + '/display'
-    #         # Call  API for Title 1 Character Display
-    #         params={'title': title_1}
-    #         response = requests.get(display_url, params=params)
-    #         print(response.content)
-    #         faces_title_1 = response['faces_title']
-    #         imread_faces_title_1 = response['imread_faces_title']
-
-    #         st.session_state.faces_title_1 = faces_title_1
-    #         st.session_state.imread_faces_title_1 = imread_faces_title_1
+    ###################################
+    # DISPLAYING FIRST MOVIE SYNOPSIS #
+    ###################################
+    with st.expander(f"{title_1} Original Synopsis"): # Dropdown to hide or show sinopsis
+        st.markdown(f"""{syn_1}""")
 
 
-    # #################################
-    # # DISPLAYING FIRST MOVIE IMAGES #
-    # #################################
-
-    # st.title(f"{title_1}")
-    # st.session_state.title_1_char = display_characters(st.session_state.faces_title_1)
-
-    # # Displaying images
-    # for i, img in enumerate(st.session_state.title_1_char):
-    #     if i <= 1:
-    #         st.image(img)
+    ####################################
+    # DISPLAYING SECOND MOVIE SYNOPSIS #
+    ####################################
+    st.title('')
+    with st.expander(f"{title_2} Original Synopsis"): # Dropdown to hide or show sinopsis
+        st.markdown(f"""{syn_2}""")
 
 
-    # ###################################
-    # # DISPLAYING FIRST MOVIE SYNOPSIS #
-    # ###################################
+    #########################################
+    # LOADING FIRST MOVIE CHARACTER PICTURE #
+    #########################################
 
-    # with st.expander(f"Show/hide {title_1} synopsis"): # Dropdown to hide or show sinopsis
-    #     st.markdown(f"""{syn_1}""")
+    if st.session_state.face_title_1 == "":
+        with st.spinner(f'Loading Characters from {title_1}'): # Spinner to show that it's loading
+            display_url = url + '/display'
+            # Call  API for Title 1 Character Display
+            params={'title': title_1}
+            char_1_response = requests.get(display_url, params=params)
+            char_1 = BytesIO(char_1_response.content)
+            char_1_img = Image.open(char_1)
 
-
-    # ###########################################################
-    # # LOADING SECOND MOVIE CHARACTER PICTURES, IMREAD OBJECTS #
-    # ###########################################################
-
-    # if st.session_state.faces_title_2 == []:
-    #     with st.spinner(f'Loading Characters from {title_2}'): # Spinner to show that it's loading
-    #         display_url = url + '/display'
-    #         # Call  API for Title 1 Character Display
-    #         params={'title': title_2}
-    #         response = requests.get(display_url, params=params).json()
-
-    #         faces_title_2 = response['faces_title']
-    #         imread_faces_title_2 = response['imread_faces_title']
-
-    #         st.session_state.faces_title_2 = faces_title_2
-    #         st.session_state.imread_faces_title_2 = imread_faces_title_2
+            st.session_state.face_title_1 = char_1_img
+            st.session_state.char_1 = char_1_response.content
 
 
-    # ##################################
-    # # DISPLAYING SECOND MOVIE IMAGES #
-    # ##################################
+    #################################
+    # DISPLAYING FIRST MOVIE IMAGES #
+    #################################
 
-    # st.title(f"{title_2}")
-    # st.session_state.title_2_char = display_characters(st.session_state.faces_title_2)
-
-    # # Displaying images
-    # for i, img in enumerate(st.session_state.title_2_char):
-    #     if i <= 1:
-    #         st.image(img)
+    st.title(f"{title_1} Character:")
+    st.image(st.session_state.face_title_1)
 
 
-    # ####################################
-    # # DISPLAYING SECOND MOVIE SYNOPSIS #
-    # ####################################
 
-    # with st.expander(f"Show/hide {title_2} synopsis"): # Dropdown to hide or show sinopsis
-    #     st.markdown(f"""{syn_2}""")
+    ##########################################
+    # LOADING SECOND MOVIE CHARACTER PICTURE #
+    ##########################################
 
+    if st.session_state.face_title_2 == "":
+        with st.spinner(f'Loading Characters from {title_2}'): # Spinner to show that it's loading
+            display_url = url + '/display'
+            # Call  API for Title 2 Character Display
+            params={'title': title_2}
+            char_2_response = requests.get(display_url, params=params)
+            char_2 = BytesIO(char_2_response.content)
+            char_2_img = Image.open(char_2)
 
-    # #################
-    # # SAVING IMAGES #
-    # #################
-
-    # for i, img_i in enumerate(st.session_state.imread_faces_title_1):
-    #     if i <= 1:
-    #         image = cv2.cvtColor(img_i, cv2.COLOR_BGR2RGB)
-    #         cv2.imwrite(f"raw_data/morph/title_1_image{i}.png", image)
-
-    # for j, img_j in enumerate(st.session_state.imread_faces_title_2):
-    #     if j <= 1:
-    #         image = cv2.cvtColor(img_j, cv2.COLOR_BGR2RGB)
-    #         cv2.imwrite(f"raw_data/morph/title_2_image{j}.png", image)
+            st.session_state.face_title_2 = char_2_img
+            st.session_state.char_2 = char_2_response.content
 
 
-    # ####################
-    # # MORPH THE IMAGES #
-    # ####################
+    #################################
+    # DISPLAYING FIRST MOVIE IMAGES #
+    #################################
 
-    # with st.spinner('Generating New Character'): # Spinner to show that it's loading
-    #     # Get the list of files in the directory
-    #     files = os.listdir("raw_data/morph/")
-
-    #     # Get the full paths of the files
-    #     file_paths = [os.path.join("raw_data/morph/", file) for file in files]
+    st.title(f"{title_2} Character:")
+    st.image(st.session_state.face_title_2)
 
 
-    #     # API Endpoints
-    #     char_url = url + '/morph'
-    #     params={'path_1': file_paths[0], 'path_2': file_paths[1], 'path_3': file_paths[2], 'path_4': file_paths[3]}
+    ####################
+    # MORPH THE IMAGES #
+    ####################
 
-    #     # Call OpenAI API for poster
-    #     character_response = requests.get(char_url, params=params)
-    #     new_image = BytesIO(character_response.content)
-    #     morphed_image = Image.open(new_image)
+    with st.spinner('Generating New Character'): # Spinner to show that it's loading
 
-    #     st.title('Generated Character')
+        # API Endpoints
+        char_url = url + '/morph'
+        params={'img_1': st.session_state.char_1, 'img_2': st.session_state.char_2}
 
-    #     # Display the image in Streamlit
-    #     st.image(morphed_image)
+        # Call OpenAI API for poster
+        character_response = requests.get(char_url, params=params)
+        new_image = BytesIO(character_response.content)
+        morphed_image = Image.open(new_image)
+
+        st.title('Generated Character')
+
+        # Display the image in Streamlit
+        st.image(morphed_image)
