@@ -187,8 +187,9 @@ if len(selected_indices) > 2:
                             # RUNNING APPLICATION #
                             #######################
 
-#url = "https://image-5e4uq44i6a-ez.a.run.app"
-url = "http://127.0.0.1:8000"
+url = "https://image-5e4uq44i6a-ez.a.run.app"
+#url = "http://127.0.0.1:8000"
+
 
 
 # When 'Merge Synopsis' button is pushed
@@ -199,6 +200,31 @@ if st.sidebar.button('Merge Movies') and len(selected_indices) == 2:
     # Getting original synopsis of the selected movies.
     syn_1, syn_2 = df['summarized_synopsis'].loc[selected_indices].values
 
+
+    col5, col6 = st.columns(2)
+
+    with col5:
+        st.title(f"{title_1} Original Synopsis")
+        st.markdown(f"""{syn_1}""")
+
+    with col6:
+        st.title(f"{title_2} Original Synopsis")
+        st.markdown(f"""{syn_2}""")
+
+
+    # ###################################
+    # # DISPLAYING FIRST MOVIE SYNOPSIS #
+    # ###################################
+    # with st.expander(f"{title_1} Original Synopsis"): # Dropdown to hide or show sinopsis
+    #     st.markdown(f"""{syn_1}""")
+
+
+    # ####################################
+    # # DISPLAYING SECOND MOVIE SYNOPSIS #
+    # ####################################
+    # st.title('')
+    # with st.expander(f"{title_2} Original Synopsis"): # Dropdown to hide or show sinopsis
+    #         st.markdown(f"""{syn_2}""")
 
     ##################################
     # GENERATING SYNOPSIS AND POSTER #
@@ -220,100 +246,85 @@ if st.sidebar.button('Merge Movies') and len(selected_indices) == 2:
             img = Image.open(new_image)
             st.session_state.gen_movie = img
 
+    # Displaying Generated Synopsis
+    st.title('Generated Synopsis')
+    st.write(st.session_state.gen_synopsis)
 
 
     # Displaying generated Poster
     st.title('Generated Movie Poster')
     st.image(st.session_state.gen_movie)
 
-    # Displaying Generated Synopsis
-    st.title('Generated Synopsis')
-    st.write(st.session_state.gen_synopsis)
 
 
 
-    ###################################
-    # DISPLAYING FIRST MOVIE SYNOPSIS #
-    ###################################
-    with st.expander(f"{title_1} Original Synopsis"): # Dropdown to hide or show sinopsis
-        st.markdown(f"""{syn_1}""")
+    # #########################################
+    # # LOADING FIRST MOVIE CHARACTER PICTURE #
+    # #########################################
+
+    # if st.session_state.face_title_1 == "":
+    #     with st.spinner(f'Loading Characters from {title_1}'): # Spinner to show that it's loading
+    #         display_url = url + '/display'
+    #         # Call  API for Title 1 Character Display
+    #         params={'title': title_1}
+    #         char_1_response = requests.get(display_url, params=params)
+    #         char_1 = BytesIO(char_1_response.content)
+    #         char_1_img = Image.open(char_1)
+
+    #         st.session_state.face_title_1 = char_1_img
+    #         st.session_state.char_1 = char_1_response.content
 
 
-    ####################################
-    # DISPLAYING SECOND MOVIE SYNOPSIS #
-    ####################################
-    st.title('')
-    with st.expander(f"{title_2} Original Synopsis"): # Dropdown to hide or show sinopsis
-        st.markdown(f"""{syn_2}""")
+    # #################################
+    # # DISPLAYING FIRST MOVIE IMAGES #
+    # #################################
 
-
-    #########################################
-    # LOADING FIRST MOVIE CHARACTER PICTURE #
-    #########################################
-
-    if st.session_state.face_title_1 == "":
-        with st.spinner(f'Loading Characters from {title_1}'): # Spinner to show that it's loading
-            display_url = url + '/display'
-            # Call  API for Title 1 Character Display
-            params={'title': title_1}
-            char_1_response = requests.get(display_url, params=params)
-            char_1 = BytesIO(char_1_response.content)
-            char_1_img = Image.open(char_1)
-
-            st.session_state.face_title_1 = char_1_img
-            st.session_state.char_1 = char_1_response.content
-
-
-    #################################
-    # DISPLAYING FIRST MOVIE IMAGES #
-    #################################
-
-    st.title(f"{title_1} Character:")
-    st.image(st.session_state.face_title_1)
+    # st.title(f"{title_1} Character:")
+    # st.image(st.session_state.face_title_1)
 
 
 
-    ##########################################
-    # LOADING SECOND MOVIE CHARACTER PICTURE #
-    ##########################################
+    # ##########################################
+    # # LOADING SECOND MOVIE CHARACTER PICTURE #
+    # ##########################################
 
-    if st.session_state.face_title_2 == "":
-        with st.spinner(f'Loading Characters from {title_2}'): # Spinner to show that it's loading
-            display_url = url + '/display'
-            # Call  API for Title 2 Character Display
-            params={'title': title_2}
-            char_2_response = requests.get(display_url, params=params)
-            char_2 = BytesIO(char_2_response.content)
-            char_2_img = Image.open(char_2)
+    # if st.session_state.face_title_2 == "":
+    #     with st.spinner(f'Loading Characters from {title_2}'): # Spinner to show that it's loading
+    #         display_url = url + '/display'
+    #         # Call  API for Title 2 Character Display
+    #         params={'title': title_2}
+    #         char_2_response = requests.get(display_url, params=params)
+    #         char_2 = BytesIO(char_2_response.content)
+    #         char_2_img = Image.open(char_2)
 
-            st.session_state.face_title_2 = char_2_img
-            st.session_state.char_2 = char_2_response.content
-
-
-    #################################
-    # DISPLAYING FIRST MOVIE IMAGES #
-    #################################
-
-    st.title(f"{title_2} Character:")
-    st.image(st.session_state.face_title_2)
+    #         st.session_state.face_title_2 = char_2_img
+    #         st.session_state.char_2 = char_2_response.content
 
 
-    ####################
-    # MORPH THE IMAGES #
-    ####################
+    # #################################
+    # # DISPLAYING FIRST MOVIE IMAGES #
+    # #################################
 
-    with st.spinner('Generating New Character'): # Spinner to show that it's loading
+    # st.title(f"{title_2} Character:")
+    # st.image(st.session_state.face_title_2)
 
-        # API Endpoints
-        char_url = url + '/morph'
-        params={'img_1': st.session_state.char_1, 'img_2': st.session_state.char_2}
 
-        # Call OpenAI API for poster
-        character_response = requests.get(char_url, params=params)
-        new_image = BytesIO(character_response.content)
-        morphed_image = Image.open(new_image)
+    # ####################
+    # # MORPH THE IMAGES #
+    # ####################
 
-        st.title('Generated Character')
+    # with st.spinner('Generating New Character'): # Spinner to show that it's loading
 
-        # Display the image in Streamlit
-        st.image(morphed_image)
+    #     # API Endpoints
+    #     char_url = url + '/morph'
+    #     params={'img_1': st.session_state.char_1, 'img_2': st.session_state.char_2}
+
+    #     # Call OpenAI API for poster
+    #     character_response = requests.get(char_url, params=params)
+    #     new_image = BytesIO(character_response.content)
+    #     morphed_image = Image.open(new_image)
+
+    #     st.title('Generated Character')
+
+    #     # Display the image in Streamlit
+    #     st.image(morphed_image)
